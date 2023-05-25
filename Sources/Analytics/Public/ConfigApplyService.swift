@@ -27,7 +27,7 @@ final class ConfigApplyService {
         eventQueueAssembly.batchSender.baseURL = baseURL
         eventQueueAssembly.batchSender.apiToken = apiKey
         
-        eventQueueAssembly.eventQueueCore.apply(
+        eventQueueAssembly.eventQueue.apply(
             EventQueueConfig(
                 maxBatchSize: remoteConfig.eventUploadMaxBatchSize,
                 uploadInterval: TimeInterval(remoteConfig.eventUploadPeriod),

@@ -32,7 +32,7 @@ final class EventFacadeTests: XCTestCase {
         
         eventQueue = EventFacadeImpl(
             stack: .mock,
-            core: coreMock,
+            eventQueue: coreMock,
             storage: storageMock,
             eventComposer: eventComposerMock,
             sessionManager: sessionManagerMock,
@@ -67,7 +67,7 @@ final class EventFacadeTests: XCTestCase {
 
         eventQueue = .init(
             stack: .mock,
-            core: coreMock,
+            eventQueue: coreMock,
             storage: storageMock,
             eventComposer: eventComposerMock,
             sessionManager: sessionManagerMock,

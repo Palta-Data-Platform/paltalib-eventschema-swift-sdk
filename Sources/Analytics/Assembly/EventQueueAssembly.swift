@@ -10,23 +10,23 @@ import PaltaCore
 import PaltaAnalyticsModel
 
 final class EventQueueAssembly {
-    let eventQueue: EventFacadeImpl
-    let eventQueueCore: EventQueueImpl
+    let eventFacade: EventFacadeImpl
+    let eventQueue: EventQueueImpl
     let batchSendController: BatchSendController
     let batchSender: BatchSenderImpl
     let contextModifier: ContextModifier
     let eventToBatchQueueBridge: EventToBatchQueueBridge
     
     init(
-        eventQueue: EventFacadeImpl,
-        eventQueueCore: EventQueueImpl,
+        eventFacade: EventFacadeImpl,
+        eventQueue: EventQueueImpl,
         batchSendController: BatchSendController,
         batchSender: BatchSenderImpl,
         contextModifier: ContextModifier,
         eventToBatchQueueBridge: EventToBatchQueueBridge
     ) {
+        self.eventFacade = eventFacade
         self.eventQueue = eventQueue
-        self.eventQueueCore = eventQueueCore
         self.batchSendController = batchSendController
         self.batchSender = batchSender
         self.contextModifier = contextModifier
@@ -65,7 +65,7 @@ extension EventQueueAssembly {
         
         // Core
         
-        let core = EventQueueImpl(
+        let eventQueue = EventQueueImpl(
             serializationErrorsProvider: serializationErrorsLogger,
             storageErrorsProvider: storeErrorsLogger,
             timer: TimerImpl(),
@@ -117,7 +117,7 @@ extension EventQueueAssembly {
         )
         
         let eventToBatchQueueBridge = EventToBatchQueueBridge(
-            eventQueue: core,
+            eventQueue: eventQueue,
             batchQueue: batchQueue,
             batchComposer: batchComposer,
             batchStorage: sqliteStorage
@@ -125,9 +125,9 @@ extension EventQueueAssembly {
         
         // EventQueue
         
-        let eventQueue = EventFacadeImpl(
+        let eventFacade = EventFacadeImpl(
             stack: stack,
-            core: core,
+            eventQueue: eventQueue,
             storage: sqliteStorage,
             eventComposer: eventComposer,
             sessionManager: analyticsCoreAssembly.sessionManager,
@@ -137,8 +137,8 @@ extension EventQueueAssembly {
         )
         
         self.init(
+            eventFacade: eventFacade,
             eventQueue: eventQueue,
-            eventQueueCore: core,
             batchSendController: sendController,
             batchSender: batchSender,
             contextModifier: currentContextManager,

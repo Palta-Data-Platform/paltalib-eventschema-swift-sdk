@@ -10,6 +10,6 @@ import PaltaAnalyticsModel
 
 public extension PaltaAnalytics {
     func log<E: Event>(_ event: E) {
-        assembly?.eventQueueAssembly.eventQueue.logEvent(event)
+        assembly?.eventQueueAssembly.eventFacade.logEvent(event)
     }
 }

@@ -19,7 +19,7 @@ protocol EventFacade {
 
 final class EventFacadeImpl: EventFacade {
     private let stack: Stack
-    private let core: EventQueue
+    private let eventQueue: EventQueue
     private let storage: EventStorage
     private let eventComposer: EventComposer
     private let sessionManager: SessionManager
@@ -29,7 +29,7 @@ final class EventFacadeImpl: EventFacade {
 
     init(
         stack: Stack,
-        core: EventQueue,
+        eventQueue: EventQueue,
         storage: EventStorage,
         eventComposer: EventComposer,
         sessionManager: SessionManager,
@@ -38,7 +38,7 @@ final class EventFacadeImpl: EventFacade {
         errorLogger: ErrorsCollector
     ) {
         self.stack = stack
-        self.core = core
+        self.eventQueue = eventQueue
         self.storage = storage
         self.eventComposer = eventComposer
         self.sessionManager = sessionManager
@@ -46,7 +46,7 @@ final class EventFacadeImpl: EventFacade {
         self.backgroundNotifier = backgroundNotifier
         self.errorLogger = errorLogger
 
-        setupCore(core, liveQueue: false)
+        setupCore(eventQueue, liveQueue: false)
         startSessionManager()
         subscribeForBackgroundNotifications()
     }
@@ -94,7 +94,7 @@ final class EventFacadeImpl: EventFacade {
         )
         
         storage.storeEvent(storableEvent)
-        core.addEvent(storableEvent)
+        eventQueue.addEvent(storableEvent)
     }
 
     private func setupCore(_ core: EventQueue, liveQueue: Bool) {
@@ -134,7 +134,7 @@ final class EventFacadeImpl: EventFacade {
     
     private func subscribeForBackgroundNotifications() {
         backgroundNotifier.addListener { [weak self] in
-            self?.core.forceFlush()
+            self?.eventQueue.forceFlush()
         }
     }
 }
