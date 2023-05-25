@@ -10,6 +10,11 @@ import PaltaAnalyticsModel
 
 protocol EventFacade {
     func logEvent<E: Event>(_ incomingEvent: E)
+    
+    func logEvent(
+        with header: Data?,
+        and payload: Data
+    )
 }
 
 final class EventFacadeImpl: EventFacade {
@@ -50,14 +55,21 @@ final class EventFacadeImpl: EventFacade {
         do {
             logEvent(
                 with: try incomingEvent.header?.serialized(),
-                and: try incomingEvent.payload.serialized(),
-                timestamp: nil,
-                skipRefreshSession: false
+                and: try incomingEvent.payload.serialized()
             )
         } catch {
             print("PaltaLib: Analytics: Failed to serialize event due to error: \(error)")
             errorLogger.logError(error.localizedDescription)
         }
+    }
+    
+    func logEvent(with header: Data?, and payload: Data) {
+        logEvent(
+            with: header,
+            and: payload,
+            timestamp: nil,
+            skipRefreshSession: false
+        )
     }
     
     private func logEvent(
