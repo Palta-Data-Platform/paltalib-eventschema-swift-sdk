@@ -32,6 +32,10 @@ final class EventQueueAssembly {
         self.contextModifier = contextModifier
         self.eventToBatchQueueBridge = eventToBatchQueueBridge
     }
+    
+    func makeWebviewObserver() -> WebviewObserver {
+        WebviewObserver(eventFacade: eventFacade)
+    }
 }
 
 extension EventQueueAssembly {
